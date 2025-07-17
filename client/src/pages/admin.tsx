@@ -1,18 +1,71 @@
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
+import { type Review } from "@shared/schema";
 import AdminStats from "@/components/admin-stats";
 import AdminTable from "@/components/admin-table";
 
 export default function Admin() {
   const { toast } = useToast();
 
+  const { data: reviews } = useQuery<Review[]>({
+    queryKey: ["/api/reviews"],
+  });
+
   const handleExportData = () => {
-    // In a real application, this would generate and download a CSV/Excel file
-    toast({
-      title: "Export Started",
-      description: "Your data export is being prepared and will be downloaded shortly.",
-    });
+    if (!reviews || reviews.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No reviews available to export.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Create CSV content
+      const csvHeaders = ["ID", "Name", "Email", "Rating", "Review", "Status", "Submitted Date"];
+      const csvRows = reviews.map(review => [
+        review.id,
+        `"${review.name.replace(/"/g, '""')}"`, // Escape quotes in names
+        review.email,
+        review.rating,
+        `"${review.review.replace(/"/g, '""')}"`, // Escape quotes in review text
+        review.status,
+        new Date(review.submittedAt).toLocaleDateString()
+      ]);
+
+      const csvContent = [csvHeaders, ...csvRows]
+        .map(row => row.join(','))
+        .join('\n');
+
+      // Create and download the file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `reviews_export_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Export Successful",
+        description: "Your data has been exported and downloaded as a CSV file.",
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "There was an error exporting the data. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
