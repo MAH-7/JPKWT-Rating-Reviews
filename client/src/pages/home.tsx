@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { type Review } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
+import { LoadingPage, LoadingCard } from "@/components/loading-spinner";
+import { ApiError } from "@/lib/queryClient";
 import ReviewForm from "@/components/review-form";
 import ReviewCard from "@/components/review-card";
 
@@ -10,11 +12,20 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const reviewsPerPage = 6;
 
-  const { data: reviews, isLoading } = useQuery<Review[]>({
+  const { 
+    data: reviews, 
+    isLoading: reviewsLoading, 
+    error: reviewsError,
+    refetch: refetchReviews 
+  } = useQuery<Review[]>({
     queryKey: ["/api/reviews/approved"],
   });
 
-  const { data: stats } = useQuery({
+  const { 
+    data: stats, 
+    isLoading: statsLoading,
+    error: statsError 
+  } = useQuery({
     queryKey: ["/api/reviews/stats"],
   });
 
@@ -41,6 +52,33 @@ export default function Home() {
         ?.scrollIntoView({ behavior: "smooth" });
     }, 50);
   };
+
+  // Handle loading states
+  if (reviewsLoading) {
+    return <LoadingPage text="Loading reviews..." />;
+  }
+
+  // Handle error states
+  if (reviewsError) {
+    return (
+      <div className="min-h-[400px] flex items-center justify-center">
+        <div className="text-center p-8 max-w-md">
+          <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Failed to load reviews
+          </h2>
+          <p className="text-gray-600 mb-6">
+            {reviewsError instanceof ApiError 
+              ? reviewsError.message 
+              : "Unable to load reviews. Please try again."}
+          </p>
+          <Button onClick={() => refetchReviews()}>
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">

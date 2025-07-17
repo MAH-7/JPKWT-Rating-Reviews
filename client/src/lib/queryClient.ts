@@ -1,27 +1,22 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { api, ApiError } from "./api";
 
-async function throwIfResNotOk(res: Response) {
-  if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
-  }
-}
+export { ApiError };
 
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const API_URL = import.meta.env.VITE_API_URL || window.location.origin;
-  const res = await fetch(`${API_URL}${url}`, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
-
-  await throwIfResNotOk(res);
-  return res;
+  const result = await api[method.toLowerCase() as keyof typeof api](url, data);
+  
+  // Return a mock Response object for compatibility
+  return {
+    ok: true,
+    status: 200,
+    json: async () => result,
+    text: async () => typeof result === 'string' ? result : JSON.stringify(result),
+  } as Response;
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
@@ -30,17 +25,17 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const API_URL = import.meta.env.VITE_API_URL || window.location.origin;
-    const res = await fetch(`${API_URL}${queryKey.join("")}`, {
-      credentials: "include",
-    });
-
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+    try {
+      return await api.get(queryKey.join(""));
+    } catch (error) {
+      if (error instanceof ApiError) {
+        if (unauthorizedBehavior === "returnNull" && error.status === 401) {
+          return null;
+        }
+        throw error;
+      }
+      throw error;
     }
-
-    await throwIfResNotOk(res);
-    return await res.json();
   };
 
 export const queryClient = new QueryClient({
@@ -49,11 +44,21 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      retry: false,
+      retry: (failureCount, error) => {
+        // Don't retry on 4xx errors (client errors)
+        if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+          return false;
+        }
+        return failureCount < 3;
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
     },
     mutations: {
-      retry: false,
+      retry: false, // Don't retry mutations
+      onError: (error) => {
+        console.error("Mutation error:", error);
+      },
     },
   },
 });
