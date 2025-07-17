@@ -1,17 +1,44 @@
+
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { type Review } from "@shared/schema";
 import AdminStats from "@/components/admin-stats";
 import AdminTable from "@/components/admin-table";
+import LoginForm from "@/components/login-form";
 
 export default function Admin() {
   const { toast } = useToast();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check if user is already authenticated on component mount
+  useEffect(() => {
+    const authStatus = localStorage.getItem("adminAuthenticated");
+    if (authStatus === "true") {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const { data: reviews } = useQuery<Review[]>({
     queryKey: ["/api/reviews"],
+    enabled: isAuthenticated, // Only fetch data when authenticated
   });
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem("adminAuthenticated", "true");
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("adminAuthenticated");
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out.",
+    });
+  };
 
   const handleExportData = () => {
     if (!reviews || reviews.length === 0) {
@@ -39,7 +66,7 @@ export default function Admin() {
         review.id,
         `"${review.name.replace(/"/g, '""')}"`,
         review.email,
-        `="${review.phone}"`, // ✅ Fix here
+        `="${review.phone}"`,
         review.rating,
         `"${review.review.replace(/"/g, '""')}"`,
         review.status,
@@ -82,6 +109,11 @@ export default function Admin() {
     }
   };
 
+  // Show login form if not authenticated
+  if (!isAuthenticated) {
+    return <LoginForm onLogin={handleLogin} />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Header */}
@@ -91,13 +123,23 @@ export default function Admin() {
             <h2 className="text-2xl font-semibold text-gray-900">
               Admin Dashboard
             </h2>
-            <Button
-              onClick={handleExportData}
-              className="bg-primary hover:bg-blue-700 text-white"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Export Data
-            </Button>
+            <div className="flex items-center space-x-4">
+              <Button
+                onClick={handleExportData}
+                className="bg-primary hover:bg-blue-700 text-white"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export Data
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </div>
