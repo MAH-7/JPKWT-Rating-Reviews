@@ -3,7 +3,7 @@ services:
   - type: web
     name: jpk-wilayah-timur-api
     runtime: node
-    buildCommand: ./build-server.sh
+    buildCommand: npm install && ./build-server.sh
     startCommand: NODE_ENV=production node dist/index.prod.js
     envVars:
       - key: DATABASE_URL
