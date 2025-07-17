@@ -71,9 +71,12 @@ export class DatabaseStorage implements IStorage {
     const allReviews = await db.select().from(reviews);
     const approvedReviews = allReviews.filter(r => r.status === "approved");
     
-    const ratingDistribution = { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 };
+    const ratingDistribution: Record<string, number> = { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 };
     approvedReviews.forEach(review => {
-      ratingDistribution[review.rating.toString()]++;
+      const ratingKey = review.rating.toString();
+      if (ratingDistribution[ratingKey] !== undefined) {
+        ratingDistribution[ratingKey]++;
+      }
     });
 
     const averageRating = approvedReviews.length > 0 
