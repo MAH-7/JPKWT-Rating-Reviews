@@ -21,7 +21,8 @@ async function apiRequest(method: string, url: string, data?: any) {
     throw new Error("Network response was not ok");
   }
 
-  return response.json();
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 }
 
 export default function AdminTable() {
