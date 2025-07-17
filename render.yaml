@@ -13,10 +13,9 @@ services:
     healthCheckPath: /api/reviews/stats
 
   # Frontend Static Site (Free Static Site)
-  - type: web
+  - type: static
     name: jpk-wilayah-timur-frontend
-    runtime: static
-    buildCommand: ./build-client.sh
+    buildCommand: npm install && ./build-client.sh
     staticPublishPath: ./dist/public
     envVars:
       - key: VITE_API_URL
