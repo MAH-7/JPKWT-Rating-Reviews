@@ -36,24 +36,28 @@ A workplace rating and review system built with React, TypeScript, Express, and 
 2. [Neon](https://neon.tech) database (free tier available)
 3. This repository pushed to GitHub
 
-### Database Setup
-1. Create a Neon database at [neon.tech](https://neon.tech)
-2. Copy your database connection string
-3. Set up the database schema:
+### Step 1: Push to GitHub
+1. Create a new repository on GitHub
+2. Push your code:
    ```bash
-   DATABASE_URL='your-neon-connection-string' npm run db:push
+   git init
+   git add .
+   git commit -m "Initial commit - JPK Wilayah Timur Reviews"
+   git branch -M main
+   git remote add origin https://github.com/yourusername/your-repo-name.git
+   git push -u origin main
    ```
 
-### Deployment Steps
+### Step 2: Deploy on Render
 
 #### Option 1: Using render.yaml (Recommended)
-1. Fork/clone this repository to your GitHub account
-2. Go to [Render Dashboard](https://dashboard.render.com)
-3. Click "New" → "Blueprint"
-4. Connect your GitHub repository
+1. Go to [Render Dashboard](https://dashboard.render.com)
+2. Click "New" → "Blueprint"
+3. Connect your GitHub repository
+4. Render will automatically detect the `render.yaml` file
 5. Set the following environment variables:
    - `DATABASE_URL`: Your Neon database connection string
-6. Deploy both services
+6. Deploy both services (backend API + frontend)
 
 #### Option 2: Manual Setup
 1. **Deploy Backend API:**
