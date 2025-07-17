@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { type Review } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { ArrowDown } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import ReviewForm from "@/components/review-form";
 import ReviewCard from "@/components/review-card";
 
 export default function Home() {
-  const [displayCount, setDisplayCount] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+  const reviewsPerPage = 5;
   
   const { data: reviews, isLoading } = useQuery<Review[]>({
     queryKey: ["/api/reviews/approved"],
@@ -17,11 +18,28 @@ export default function Home() {
     queryKey: ["/api/reviews/stats"],
   });
 
-  const displayedReviews = reviews?.slice(0, displayCount) || [];
-  const hasMore = reviews && reviews.length > displayCount;
+  const totalReviews = reviews?.length || 0;
+  const totalPages = Math.ceil(totalReviews / reviewsPerPage);
+  const startIndex = (currentPage - 1) * reviewsPerPage;
+  const endIndex = startIndex + reviewsPerPage;
+  const displayedReviews = reviews?.slice(startIndex, endIndex) || [];
 
-  const loadMore = () => {
-    setDisplayCount(prev => prev + 6);
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to reviews section
+    document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      goToPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
   };
 
   return (
@@ -54,7 +72,7 @@ export default function Home() {
       <ReviewForm />
 
       {/* Published Reviews Section */}
-      <div className="py-16 bg-gray-50">
+      <div id="reviews-section" className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">
             What Others Are Saying
@@ -62,7 +80,7 @@ export default function Home() {
           
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+              {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
                   <div className="flex items-center mb-4">
                     <div className="flex space-x-1 mr-3">
@@ -92,22 +110,57 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 {displayedReviews.map((review) => (
                   <ReviewCard key={review.id} review={review} />
                 ))}
               </div>
               
-              {hasMore && (
-                <div className="text-center mt-8">
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center space-x-4">
                   <Button
-                    onClick={loadMore}
-                    variant="ghost"
-                    className="text-primary hover:text-blue-700"
+                    onClick={prevPage}
+                    disabled={currentPage === 1}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center"
                   >
-                    Load More Reviews
-                    <ArrowDown className="ml-2 h-4 w-4" />
+                    <ChevronLeft className="h-4 w-4 mr-1" />
+                    Previous
                   </Button>
+                  
+                  <div className="flex items-center space-x-2">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <Button
+                        key={page}
+                        onClick={() => goToPage(page)}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        className="w-10 h-10"
+                      >
+                        {page}
+                      </Button>
+                    ))}
+                  </div>
+                  
+                  <Button
+                    onClick={nextPage}
+                    disabled={currentPage === totalPages}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center"
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
+              )}
+              
+              {totalReviews > 0 && (
+                <div className="text-center mt-4">
+                  <p className="text-sm text-gray-500">
+                    Showing {startIndex + 1}-{Math.min(endIndex, totalReviews)} of {totalReviews} reviews
+                  </p>
                 </div>
               )}
             </>

@@ -1,19 +1,34 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { type Review } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, X, Eye, Search } from "lucide-react";
+import { Check, X, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { type Review } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
 import StarRating from "./star-rating";
+
+async function apiRequest(method: string, url: string, data?: any) {
+  const response = await fetch(url, {
+    method,
+    headers: data ? { "Content-Type": "application/json" } : {},
+    body: data ? JSON.stringify(data) : undefined,
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  return response.json();
+}
 
 export default function AdminTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const reviewsPerPage = 10;
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -60,9 +75,9 @@ export default function AdminTable() {
       review.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       review.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       review.review.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     const matchesStatus = statusFilter === "all" || review.status === statusFilter;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -72,7 +87,7 @@ export default function AdminTable() {
       approved: "bg-green-100 text-green-800",
       rejected: "bg-red-100 text-red-800",
     };
-    
+
     return (
       <Badge className={`${variants[status as keyof typeof variants]} status-badge ${status}`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -96,6 +111,20 @@ export default function AdminTable() {
       </Card>
     );
   }
+
+  const startIndex = (currentPage - 1) * reviewsPerPage;
+  const endIndex = startIndex + reviewsPerPage;
+  const currentReviews = filteredReviews?.slice(startIndex, endIndex);
+
+  const totalPages = filteredReviews ? Math.ceil(filteredReviews.length / reviewsPerPage) : 0;
+
+  const goToPreviousPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  };
 
   return (
     <Card>
@@ -146,7 +175,7 @@ export default function AdminTable() {
                 </tr>
               </thead>
               <tbody>
-                {filteredReviews?.map((review) => (
+                {currentReviews?.map((review) => (
                   <tr key={review.id} className="hover:bg-gray-50">
                     <td>
                       <div className="flex items-center">
@@ -221,6 +250,27 @@ export default function AdminTable() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+                 {filteredReviews?.length > 0 && (
+          <div className="flex items-center justify-between mt-4">
+            <Button
+              variant="outline"
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Previous
+            </Button>
+            <span>{`Page ${currentPage} of ${totalPages}`}</span>
+            <Button
+              variant="outline"
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         )}
       </CardContent>
