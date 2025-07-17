@@ -8,8 +8,8 @@ import ReviewCard from "@/components/review-card";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
-  const reviewsPerPage = 5;
-  
+  const reviewsPerPage = 6;
+
   const { data: reviews, isLoading } = useQuery<Review[]>({
     queryKey: ["/api/reviews/approved"],
   });
@@ -24,32 +24,33 @@ export default function Home() {
   const endIndex = startIndex + reviewsPerPage;
   const displayedReviews = reviews?.slice(startIndex, endIndex) || [];
 
-  const goToPage = (page: number) => {
-    setCurrentPage(page);
-    // Scroll to reviews section
-    document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' });
+  const goToPreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    scrollToReviews();
   };
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      goToPage(currentPage + 1);
-    }
+  const goToNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    scrollToReviews();
   };
 
-  const prevPage = () => {
-    if (currentPage > 1) {
-      goToPage(currentPage - 1);
-    }
+  const scrollToReviews = () => {
+    setTimeout(() => {
+      document
+        .getElementById("reviews-section")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
   };
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero */}
       <div className="bg-primary text-white py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-4">Share Your Experience</h2>
           <p className="text-xl text-blue-100 mb-8">
-            Help us improve by sharing your feedback about our workplace services
+            Help us improve by sharing your feedback about our workplace
+            services
           </p>
           <div className="flex justify-center items-center space-x-8">
             <div className="text-center">
@@ -71,34 +72,38 @@ export default function Home() {
       {/* Review Form */}
       <ReviewForm />
 
-      {/* Published Reviews Section */}
+      {/* Reviews Section */}
       <div id="reviews-section" className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">
             What Others Are Saying
           </h3>
-          
+
+          {/* Loading state */}
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-                  <div className="flex items-center mb-4">
-                    <div className="flex space-x-1 mr-3">
+              {[...Array(reviewsPerPage)].map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-lg shadow-md p-6 animate-pulse"
+                >
+                  <div className="flex items-center mb-4 space-x-3">
+                    <div className="flex space-x-1">
                       {[1, 2, 3, 4, 5].map((j) => (
-                        <div key={j} className="w-4 h-4 bg-gray-200 rounded"></div>
+                        <div key={j} className="w-4 h-4 bg-gray-200 rounded" />
                       ))}
                     </div>
-                    <div className="w-20 h-4 bg-gray-200 rounded"></div>
+                    <div className="w-20 h-4 bg-gray-200 rounded" />
                   </div>
                   <div className="space-y-2 mb-4">
-                    <div className="w-full h-4 bg-gray-200 rounded"></div>
-                    <div className="w-3/4 h-4 bg-gray-200 rounded"></div>
+                    <div className="w-full h-4 bg-gray-200 rounded" />
+                    <div className="w-3/4 h-4 bg-gray-200 rounded" />
                   </div>
                   <div className="flex items-center">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full mr-3"></div>
+                    <div className="w-10 h-10 bg-gray-200 rounded-full mr-3" />
                     <div className="space-y-1">
-                      <div className="w-24 h-4 bg-gray-200 rounded"></div>
-                      <div className="w-20 h-3 bg-gray-200 rounded"></div>
+                      <div className="w-24 h-4 bg-gray-200 rounded" />
+                      <div className="w-20 h-3 bg-gray-200 rounded" />
                     </div>
                   </div>
                 </div>
@@ -106,7 +111,9 @@ export default function Home() {
             </div>
           ) : displayedReviews.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No reviews yet. Be the first to share your experience!</p>
+              <p className="text-gray-500 text-lg">
+                No reviews yet. Be the first to share your experience!
+              </p>
             </div>
           ) : (
             <>
@@ -115,54 +122,41 @@ export default function Home() {
                   <ReviewCard key={review.id} review={review} />
                 ))}
               </div>
-              
+
+              {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-center space-x-4">
+                <div className="flex items-center justify-between mt-4">
                   <Button
-                    onClick={prevPage}
-                    disabled={currentPage === 1}
                     variant="outline"
-                    size="sm"
-                    className="flex items-center"
+                    onClick={goToPreviousPage}
+                    disabled={currentPage === 1}
                   >
-                    <ChevronLeft className="h-4 w-4 mr-1" />
+                    <ChevronLeft className="mr-2 h-4 w-4" />
                     Previous
                   </Button>
-                  
-                  <div className="flex items-center space-x-2">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <Button
-                        key={page}
-                        onClick={() => goToPage(page)}
-                        variant={currentPage === page ? "default" : "outline"}
-                        size="sm"
-                        className="w-10 h-10"
-                      >
-                        {page}
-                      </Button>
-                    ))}
-                  </div>
-                  
+
+                  <span className="text-sm text-gray-600">
+                    Page {currentPage} of {totalPages}
+                  </span>
+
                   <Button
-                    onClick={nextPage}
-                    disabled={currentPage === totalPages}
                     variant="outline"
-                    size="sm"
-                    className="flex items-center"
+                    onClick={goToNextPage}
+                    disabled={currentPage === totalPages}
                   >
                     Next
-                    <ChevronRight className="h-4 w-4 ml-1" />
+                    <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               )}
-              
-              {totalReviews > 0 && (
-                <div className="text-center mt-4">
-                  <p className="text-sm text-gray-500">
-                    Showing {startIndex + 1}-{Math.min(endIndex, totalReviews)} of {totalReviews} reviews
-                  </p>
-                </div>
-              )}
+
+              {/* Review count */}
+              <div className="text-center mt-4">
+                <p className="text-sm text-gray-500">
+                  Showing {startIndex + 1}-{Math.min(endIndex, totalReviews)} of{" "}
+                  {totalReviews} reviews
+                </p>
+              </div>
             </>
           )}
         </div>
@@ -173,7 +167,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h3 className="text-xl font-semibold mb-4">JPK Wilayah Timur</h3>
-            <p className="text-gray-400 mb-4">Your feedback helps us improve our services</p>
+            <p className="text-gray-400 mb-4">
+              Your feedback helps us improve our services
+            </p>
           </div>
         </div>
       </footer>
