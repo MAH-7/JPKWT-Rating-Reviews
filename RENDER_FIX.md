@@ -14,7 +14,6 @@ services:
   - type: web
     name: jpk-wilayah-timur-api
     runtime: node
-    plan: free
     buildCommand: ./build-server.sh
     startCommand: NODE_ENV=production node dist/index.prod.js
     envVars:
@@ -28,7 +27,6 @@ services:
   - type: web
     name: jpk-wilayah-timur-frontend
     runtime: static
-    plan: free
     buildCommand: ./build-client.sh
     staticPublishPath: ./dist/public
     envVars:
