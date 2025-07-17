@@ -66,7 +66,7 @@ A workplace rating and review system built with React, TypeScript, Express, and 
    - Connect your GitHub repository
    - Set:
      - **Build Command**: `./build-server.sh`
-     - **Start Command**: `NODE_ENV=production node dist/index.js`
+     - **Start Command**: `NODE_ENV=production node dist/index.prod.js`
      - **Environment Variables**:
        - `DATABASE_URL`: Your Neon database connection string
        - `NODE_ENV`: `production`

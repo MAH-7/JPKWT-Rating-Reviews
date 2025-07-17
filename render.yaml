@@ -5,7 +5,7 @@ services:
     runtime: node
     plan: free
     buildCommand: ./build-server.sh
-    startCommand: NODE_ENV=production node dist/index.js
+    startCommand: NODE_ENV=production node dist/index.prod.js
     envVars:
       - key: DATABASE_URL
         sync: false

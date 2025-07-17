@@ -72,6 +72,12 @@ VITE_API_URL=https://your-backend-service.onrender.com
 - Check Node.js version compatibility
 - Verify all dependencies are installed
 
+### Fixed: Replit Dependencies Issue
+If you encounter "Cannot find package '@replit/vite-plugin-runtime-error-modal'" error:
+- The project now uses `server/index.prod.ts` for production builds
+- This avoids importing Replit-specific dependencies that don't exist in Render
+- The build scripts automatically use the production-safe version
+
 ### Database Issues
 - Verify DATABASE_URL is correct
 - Ensure Neon database is accessible

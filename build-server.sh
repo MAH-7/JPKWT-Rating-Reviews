@@ -1,4 +1,5 @@
 #!/bin/bash
 # Build script for server (backend)
 npm install
-npm run build:server || esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+# Use production-specific server entry point to avoid Replit dependencies
+esbuild server/index.prod.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
