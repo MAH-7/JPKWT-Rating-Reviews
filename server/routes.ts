@@ -18,9 +18,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get approved reviews for public view
   app.get("/api/reviews/approved", async (req, res) => {
     try {
+      console.log("Fetching approved reviews...");
       const reviews = await storage.getApprovedReviews();
+      console.log("Successfully fetched approved reviews:", reviews.length);
       res.json(reviews);
     } catch (error) {
+      console.error("Error fetching approved reviews:", error);
       res.status(500).json({ error: "Failed to fetch approved reviews" });
     }
   });
