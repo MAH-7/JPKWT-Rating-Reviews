@@ -25,39 +25,53 @@ export default function Admin() {
 
     try {
       // Create CSV content
-      const csvHeaders = ["ID", "Name", "Email", "Rating", "Review", "Status", "Submitted Date"];
-      const csvRows = reviews.map(review => [
+      const csvHeaders = [
+        "ID",
+        "Name",
+        "Email",
+        "Phone",
+        "Rating",
+        "Review",
+        "Status",
+        "Submitted Date",
+      ];
+      const csvRows = reviews.map((review) => [
         review.id,
-        `"${review.name.replace(/"/g, '""')}"`, // Escape quotes in names
+        `"${review.name.replace(/"/g, '""')}"`,
         review.email,
+        `="${review.phone}"`, // ✅ Fix here
         review.rating,
-        `"${review.review.replace(/"/g, '""')}"`, // Escape quotes in review text
+        `"${review.review.replace(/"/g, '""')}"`,
         review.status,
-        new Date(review.submittedAt).toLocaleDateString()
+        new Date(review.submittedAt).toLocaleDateString(),
       ]);
 
       const csvContent = [csvHeaders, ...csvRows]
-        .map(row => row.join(','))
-        .join('\n');
+        .map((row) => row.join(","))
+        .join("\n");
 
       // Create and download the file
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
-      
-      link.setAttribute('href', url);
-      link.setAttribute('download', `reviews_export_${new Date().toISOString().split('T')[0]}.csv`);
-      link.style.visibility = 'hidden';
-      
+
+      link.setAttribute("href", url);
+      link.setAttribute(
+        "download",
+        `reviews_export_${new Date().toISOString().split("T")[0]}.csv`,
+      );
+      link.style.visibility = "hidden";
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       URL.revokeObjectURL(url);
 
       toast({
         title: "Export Successful",
-        description: "Your data has been exported and downloaded as a CSV file.",
+        description:
+          "Your data has been exported and downloaded as a CSV file.",
       });
     } catch (error) {
       toast({
@@ -74,7 +88,9 @@ export default function Admin() {
       <div className="bg-white shadow-sm border-b border-gray-200 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-semibold text-gray-900">Admin Dashboard</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Admin Dashboard
+            </h2>
             <Button
               onClick={handleExportData}
               className="bg-primary hover:bg-blue-700 text-white"
