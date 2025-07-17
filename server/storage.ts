@@ -128,6 +128,37 @@ export class DatabaseStorage implements IStorage {
     
     return await db.select().from(reviews).orderBy(desc(reviews.submittedAt));
   }
+
+  async deleteReview(id: number): Promise<boolean> {
+    const result = await db.delete(reviews).where(eq(reviews.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getReviewStats(): Promise<{
+    total: number;
+    pending: number;
+    approved: number;
+    rejected: number;
+    averageRating: number;
+  }> {
+    const allReviews = await this.getReviews();
+    
+    const stats = {
+      total: allReviews.length,
+      pending: allReviews.filter(r => r.status === "pending").length,
+      approved: allReviews.filter(r => r.status === "approved").length,
+      rejected: allReviews.filter(r => r.status === "rejected").length,
+      averageRating: 0,
+    };
+
+    if (stats.approved > 0) {
+      const approvedReviews = allReviews.filter(r => r.status === "approved");
+      const totalRating = approvedReviews.reduce((sum, r) => sum + r.rating, 0);
+      stats.averageRating = Math.round((totalRating / stats.approved) * 10) / 10;
+    }
+
+    return stats;
+  }
 }
 
 export const storage = new DatabaseStorage();
