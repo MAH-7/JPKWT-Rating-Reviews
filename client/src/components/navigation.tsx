@@ -2,6 +2,7 @@
 import { Link, useLocation } from "wouter";
 import { Home, Settings, Menu, X } from "lucide-react";
 import { useState } from "react";
+import logoSvg from "../assets/logo.svg";
 
 export default function Navigation() {
   const [location] = useLocation();
@@ -20,11 +21,8 @@ export default function Navigation() {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#2D3B8F] to-[#1E2563] rounded-xl shadow-lg flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 100 100" className="text-white">
-                    <circle cx="50" cy="25" r="15" fill="currentColor"/>
-                    <path d="M20 75 L35 40 L50 65 L65 40 L80 75 Z" fill="currentColor"/>
-                  </svg>
+                <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center p-1">
+                  <img src={logoSvg} alt="JPK Logo" className="w-10 h-10 object-contain" />
                 </div>
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full shadow-md"></div>
               </div>
