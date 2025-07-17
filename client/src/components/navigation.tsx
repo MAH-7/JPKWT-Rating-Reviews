@@ -19,15 +19,12 @@ export default function Navigation() {
           {/* Logo and Brand */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <div className="relative">
-                <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center p-1">
-                  <img
-                    src={logoSvg}
-                    alt="JPK Logo"
-                    className="w-10 h-10 object-contain"
-                  />
-                </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full shadow-md"></div>
+              <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center p-1">
+                <img
+                  src={logoSvg}
+                  alt="JPK Logo"
+                  className="w-10 h-10 object-contain"
+                />
               </div>
               <div className="ml-4">
                 <h1 className="text-xl font-bold bg-gradient-to-r from-[#2D3B8F] to-[#1E2563] bg-clip-text text-transparent">
