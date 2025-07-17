@@ -1,0 +1,28 @@
+services:
+  # Backend API Service
+  - type: web
+    name: jpk-wilayah-timur-api
+    runtime: node
+    plan: free
+    buildCommand: ./build-server.sh
+    startCommand: NODE_ENV=production node dist/index.js
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /api/reviews/stats
+
+  # Frontend Static Site
+  - type: web
+    name: jpk-wilayah-timur-frontend
+    runtime: static
+    plan: free
+    buildCommand: ./build-client.sh
+    staticPublishPath: ./dist/public
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: jpk-wilayah-timur-api
+          property: host

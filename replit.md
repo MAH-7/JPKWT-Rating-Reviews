@@ -20,16 +20,17 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend Architecture
 - **Framework**: Express.js with TypeScript
-- **Database**: PostgreSQL with Drizzle ORM
+- **Database**: Neon PostgreSQL with Drizzle ORM
 - **Validation**: Zod schemas for request/response validation
-- **Session Management**: Express sessions with PostgreSQL store
 - **Development**: ESM modules with tsx for TypeScript execution
+- **Production**: Bundled with esbuild for deployment
 
 ### Database Layer
-- **ORM**: Drizzle ORM with PostgreSQL dialect
+- **Database**: Neon PostgreSQL (serverless)
+- **ORM**: Drizzle ORM with neon-http driver
 - **Migrations**: Drizzle Kit for schema migrations
 - **Schema**: Single reviews table with status management
-- **Connection**: Neon Database serverless connection
+- **Connection**: Persistent connection using DATABASE_URL environment variable
 
 ## Key Components
 
@@ -59,19 +60,21 @@ Preferred communication style: Simple, everyday language.
 ## External Dependencies
 
 ### Core Dependencies
-- **@neondatabase/serverless**: PostgreSQL serverless driver
+- **@neondatabase/serverless**: Neon PostgreSQL serverless driver
 - **@tanstack/react-query**: Server state management
 - **@radix-ui/***: Headless UI components for accessibility
 - **drizzle-orm**: Type-safe database ORM
 - **react-hook-form**: Form state management
 - **zod**: Runtime type validation
 - **wouter**: Lightweight routing
+- **dotenv**: Environment variable management
 
 ### Development Tools
 - **Vite**: Build tool with HMR and optimization
 - **TypeScript**: Type safety across the stack
 - **ESLint/Prettier**: Code quality and formatting
 - **Tailwind CSS**: Utility-first styling
+- **esbuild**: Server bundling for production
 
 ## Deployment Strategy
 
@@ -83,12 +86,20 @@ Preferred communication style: Simple, everyday language.
 ### Environment Configuration
 - **Development**: Uses tsx for TypeScript execution with hot reload
 - **Production**: Bundled Node.js application with static file serving
-- **Database**: Requires `DATABASE_URL` environment variable
+- **Database**: Uses Neon PostgreSQL with `DATABASE_URL` environment variable
+
+### Render Deployment
+- **Backend Service**: Node.js web service with health checks
+- **Frontend Service**: Static site deployment
+- **Database**: Neon PostgreSQL (external service)
+- **Environment Variables**: Configured in Render dashboard
 
 ### File Structure
 - `client/`: React frontend application
 - `server/`: Express backend with API routes
 - `shared/`: Common schemas and types
-- `migrations/`: Database migration files
+- `build-client.sh`: Frontend build script for Render
+- `build-server.sh`: Backend build script for Render
+- `render.yaml`: Deployment configuration for Render
 
 The application follows a monorepo structure with clear separation between frontend, backend, and shared code. The database schema is centralized in the shared directory for consistency across the stack.
