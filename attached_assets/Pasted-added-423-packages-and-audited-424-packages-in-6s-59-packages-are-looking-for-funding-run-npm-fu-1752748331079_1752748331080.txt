@@ -1,0 +1,43 @@
+added 423 packages, and audited 424 packages in 6s
+59 packages are looking for funding
+  run `npm fund` for details
+5 vulnerabilities (1 low, 4 moderate)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+up to date, audited 424 packages in 977ms
+59 packages are looking for funding
+  run `npm fund` for details
+5 vulnerabilities (1 low, 4 moderate)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+  dist/index.prod.js  9.1kb
+⚡ Done in 4ms
+==> Uploading build...
+==> Uploaded in 5.3s. Compression took 2.7s
+==> Build successful 🎉
+==> Deploying...
+==> Running 'NODE_ENV=production node dist/index.prod.js'
+10:28:38 AM [express] serving on port 10000
+==> Your service is live 🎉
+==> 
+==> ///////////////////////////////////////////////////////////
+==> 
+==> Available at your primary URL https://jpkwt-rating-reviews.onrender.com
+==> 
+==> ///////////////////////////////////////////////////////////
+10:29:23 AM [express] GET /api/reviews/stats 200 in 791ms :: {"totalReviews":4,"pendingReviews":0,"ap…
+10:29:23 AM [express] GET /api/reviews/approved 200 in 499ms :: [{"id":4,"name":"Zack","email":"aiman…
+10:29:51 AM [express] GET /api/reviews/stats 200 in 501ms :: {"totalReviews":4,"pendingReviews":0,"ap…
+10:29:51 AM [express] GET /api/reviews/approved 200 in 495ms :: [{"id":4,"name":"Zack","email":"aiman…
+10:29:53 AM [express] GET /api/reviews/stats 200 in 164ms :: {"totalReviews":4,"pendingReviews":0,"ap…
+10:29:53 AM [express] GET /api/reviews/approved 200 in 166ms :: [{"id":4,"name":"Zack","email":"aiman…
+10:30:16 AM [express] GET /api/reviews 200 in 499ms :: [{"id":4,"name":"Zack","email":"aiman_raiko@ya…
+10:30:16 AM [express] GET /api/reviews/stats 200 in 500ms :: {"totalReviews":4,"pendingReviews":0,"ap…
+10:30:28 AM [express] GET /api/reviews/approved 200 in 491ms :: [{"id":4,"name":"Zack","email":"aiman…
+10:30:28 AM [express] GET /api/reviews/stats 200 in 500ms :: {"totalReviews":4,"pendingReviews":0,"ap…

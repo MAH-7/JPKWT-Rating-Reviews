@@ -1,0 +1,30 @@
+Access to fetch at 'https://jpkwt-rating-reviews.onrender.com/api/reviews/approved' from origin 'https://jpkwt-rating-reviews-1.onrender.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.Understand this error
+jpkwt-rating-reviews.onrender.com/api/reviews/approved:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDUnderstand this error
+jpkwt-rating-reviews-1.onrender.com/:1 Access to fetch at 'https://jpkwt-rating-reviews.onrender.com/api/reviews/stats' from origin 'https://jpkwt-rating-reviews-1.onrender.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.Understand this error
+jpkwt-rating-reviews.onrender.com/api/reviews/stats:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDUnderstand this error
+jpkwt-rating-reviews-1.onrender.com/:1 Access to fetch at 'https://jpkwt-rating-reviews.onrender.com/api/reviews/approved' from origin 'https://jpkwt-rating-reviews-1.onrender.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.Understand this error
+jpkwt-rating-reviews.onrender.com/api/reviews/approved:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDUnderstand this error
+jpkwt-rating-reviews-1.onrender.com/:1 Access to fetch at 'https://jpkwt-rating-reviews.onrender.com/api/reviews/stats' from origin 'https://jpkwt-rating-reviews-1.onrender.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.Understand this error
+jpkwt-rating-reviews.onrender.com/api/reviews/stats:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDUnderstand this error
+jpkwt-rating-reviews-1.onrender.com/:1 Access to fetch at 'https://jpkwt-rating-reviews.onrender.com/api/reviews' from origin 'https://jpkwt-rating-reviews-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.Understand this error
+jpkwt-rating-reviews.onrender.com/api/reviews:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDUnderstand this error
+jpkwt-rating-reviews-1.onrender.com/:1 Access to fetch at 'https://jpkwt-rating-reviews.onrender.com/api/reviews' from origin 'https://jpkwt-rating-reviews-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.Understand this error
+jpkwt-rating-reviews.onrender.com/api/reviews:1 
+            
+            
+           Failed to load resource: net::ERR_FAILED
