@@ -8,22 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Check, X, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { type Review } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import StarRating from "./star-rating";
 
-async function apiRequest(method: string, url: string, data?: any) {
-  const response = await fetch(url, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-  });
-
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-
-  const text = await response.text();
-  return text ? JSON.parse(text) : null;
-}
 
 export default function AdminTable() {
   const [searchQuery, setSearchQuery] = useState("");
