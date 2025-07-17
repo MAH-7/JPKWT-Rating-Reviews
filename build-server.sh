@@ -1,7 +1,5 @@
 #!/bin/bash
-# Build script for server (backend)
+# Build script for API server only (no frontend)
 npm install
-# Build frontend first
-npm run build:client || vite build
-# Use production-specific server entry point to avoid Replit dependencies
+# Build API server only - frontend is deployed separately
 esbuild server/index.prod.ts --platform=node --packages=external --bundle --format=esm --outdir=dist

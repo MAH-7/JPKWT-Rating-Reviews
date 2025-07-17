@@ -2,19 +2,21 @@
 
 ## Quick Deploy (Manual - Not Blueprint)
 
-### Step 1: Create Web Service (Backend)
+### Step 1: Create Web Service (Backend API)
 1. Go to Render Dashboard → New → Web Service
 2. Connect your GitHub repo: `MAH-7/JPKWT-Rating-Reviews`
 3. Configure:
    - **Name**: `jpk-wilayah-timur-api`
    - **Runtime**: Node
-   - **Build Command**: `npm install && ./build-server.sh`
+   - **Build Command**: `./build-server.sh`
    - **Start Command**: `NODE_ENV=production node dist/index.prod.js`
    - **Instance Type**: Free
 4. Add Environment Variables:
    - `DATABASE_URL`: Your Neon database URL
    - `NODE_ENV`: `production`
 5. Deploy!
+
+**Note**: The backend is now API-only with CORS enabled. It doesn't serve static files since frontend is deployed separately.
 
 ### Step 2: Create Static Site (Frontend)
 1. Go to Render Dashboard → New → Static Site
