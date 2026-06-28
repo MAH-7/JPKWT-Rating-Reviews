@@ -1,8 +1,8 @@
 services:
   # Backend API Service (Free Web Service)
   - type: web
-    name: jpk-wilayah-timur-api
     runtime: node
+    name: jpk-wilayah-timur-api
     buildCommand: npm install && ./build-server.sh
     startCommand: NODE_ENV=production node dist/index.prod.js
     envVars:
@@ -13,7 +13,8 @@ services:
     healthCheckPath: /api/reviews/stats
 
   # Frontend Static Site (Free Static Site)
-  - type: static
+  - type: web
+    runtime: static
     name: jpk-wilayah-timur-frontend
     buildCommand: npm install && ./build-client.sh
     staticPublishPath: ./dist/public
